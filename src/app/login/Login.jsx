@@ -4,10 +4,12 @@ import { login } from '@/services/userService';
 import { useRouter } from 'next/navigation';
 import React,{useContext, useState} from 'react'
 import { toast } from 'react-toastify';
+import { Vortex } from 'react-loader-spinner';
 
 const Login = () => {
   const router=useRouter();
   const context=useContext(UserContext);
+  const [loggedIn,setLoggedIn]=useState(false);
     const [data,setData]=useState({
         email:"",
         password:""
@@ -31,12 +33,15 @@ const Login = () => {
       //VALID DATA LOGIN
 
       try { 
+        setLoggedIn(true);
         const result=await login(data);
         toast.success("Logged In");
         //redirect
         context.setUser(result.user);
+        setLoggedIn(false);
         router.push("/profile/user");
       } catch (error) {
+          setLoggedIn(false);
           console.log(error);
           toast.error(error.response.data.message,{
             position:"top-center"
@@ -45,8 +50,18 @@ const Login = () => {
 
     }
 
-  return (
-    <div className='grid grid-cols-12'>
+  return (<>
+  {loggedIn?<div className='mt-4 flex justify-center'>
+    <Vortex
+  visible={true}
+  height="180"
+  width="180"
+  ariaLabel="vortex-loading"
+  wrapperStyle={{}}
+  wrapperClass="vortex-wrapper"
+  colors={['red', 'green', 'blue', 'yellow', 'orange', 'purple']}
+/>
+  </div>:<div className='grid grid-cols-12'>
         <div className='col-span-4 col-start-5'>
             <div className='py-5'>
             <h1 className='text-3xl text-center'>Login Here</h1>
@@ -97,7 +112,9 @@ const Login = () => {
             </form>
             </div>
         </div>
-    </div>
+    </div>}
+    
+    </>
   )
 }
 

@@ -4,6 +4,7 @@ import React,{useState,useEffect} from 'react';
 import Image from "next/image";
 import { addTask } from "@/services/taskService";
 import { toast } from 'react-toastify';
+import { Vortex } from 'react-loader-spinner';
 
 const AddTask = () => {
   
@@ -13,10 +14,11 @@ const AddTask = () => {
     status:'none',
     userId:''
   });
-
+  const [loading,setLoading]=useState(false);
   const handleAddTask=async()=>{
     event.preventDefault();
     //validate task data
+    setLoading(true);
     try {
       const result=await addTask(task);
       toast.success("Your task is added!!",{
@@ -28,17 +30,31 @@ const AddTask = () => {
         status:'none',
         userId:'64e96ba0e375cc67214a58aa'
       })
+      setLoading(false);
     } catch (error) {
       console.log(error);
       toast.error("Task not added !!",{
         position:"top-center",
       })
+      setLoading(false);
     }
 
 
   }
 
   return (
+    <>
+    {loading?<div className='mt-4 flex justify-center'>
+    <Vortex
+  visible={true}
+  height="180"
+  width="180"
+  ariaLabel="vortex-loading"
+  wrapperStyle={{}}
+  wrapperClass="vortex-wrapper"
+  colors={['red', 'green', 'blue', 'yellow', 'orange', 'purple']}
+/>
+  </div>:
     <div className='grid grid-cols-12 justify-center'>
         <div className='col-span-4 col-start-5 p-5 shadow-sm'>
           <div className="my-8 flex justify-center">
@@ -115,7 +131,8 @@ const AddTask = () => {
           
         </form>
         </div>
-    </div>
+    </div>}
+    </>
   )
 }
 
