@@ -15,7 +15,7 @@ const AddTask = () => {
     userId:''
   });
   const [loading,setLoading]=useState(false);
-  const handleAddTask=async()=>{
+  const handleAddTask=async(event)=>{
     event.preventDefault();
     //validate task data
     setLoading(true);
